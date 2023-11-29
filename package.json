@@ -1,0 +1,10 @@
+{
+  "name": "drawio-docker",
+  "version": "1.0.0",
+  "scripts": {
+    "docker:build": "docker build . -t drawio",
+    "docker:run": "docker run -p 80:80 drawio"
+  },
+  "dependencies": {
+  }
+}
