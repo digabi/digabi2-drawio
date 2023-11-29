@@ -1,0 +1,10 @@
+{
+  "version": "1",
+  "singleInstance": true,
+  "cas": false,
+  "appId": "drawio",
+  "appName": {
+    "fi-FI": "Drawio",
+    "sv-FI": "Drawio"
+  }
+}
