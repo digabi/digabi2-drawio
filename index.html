@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <base href="/apps/drawio/">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drawio</title>
+    <style>
+      .outer {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+      .inner {
+        flex: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="outer">
+      <iframe
+        id="app"
+        src="public/?embed=1&proto=json&noExitBtn=1&stealth=1&autosave=1&modified=unsavedChanges"
+        frameborder="0"
+        class="inner"
+      ></iframe>
+    </div>
+    <script>
+      const config = new Map()
+
+      const path = () => `/wd/${encodeURIComponent(config.get('filename'))}`
+
+      function onLoad() {
+        const drawioElem = document.getElementById('app')
+        const args = new URLSearchParams(window.location.search)
+        config.set('filename', args.get('filename'))
+      }
+
+      async function onMessage(event) {
+        if (event.data.length === 0) {
+          return
+        }
+
+        const drawio = document.getElementById('app').contentWindow
+        const message = JSON.parse(event.data)
+
+        switch (message.event) {
+          case 'init': {
+            if (!config.get('filename')) {
+              break
+            }
+            const xml = await fetch(path()).then(resp => resp.text())
+            drawio.postMessage(JSON.stringify({ action: 'load', xml }), '*')
+            break
+          }
+          case 'save': {
+            await fetch(path(), { method: 'PUT', body: message.xml })
+            break
+          }
+        }
+      }
+
+      window.addEventListener('load', onLoad)
+      window.addEventListener('message', onMessage)
+    </script>
+  </body>
+</html>
