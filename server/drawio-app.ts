@@ -10,16 +10,24 @@ interface AppParams {
 export default function createDrawioApp(args: AppParams) {
   const root = '/apps/drawio'
 
-  const ad = new dnssd.Advertisement('_http._tcp,_abittiapp', args.port, {
+  const ad = new dnssd.Advertisement('_http._tcp', args.port, {
     name: 'Drawio',
-    txt: {
-      path: root,
-      ext: '.drawio.xml'
-    }
+    txt: { path: '/.well-known/appspecific/dev.abitti.json' }
   })
 
   const app = express()
   app.use(morgan('combined'))
+
+  app.use('/.well-known/appspecific/dev.abitti.json', (req, res) => res.json({
+    drawio: {
+      name: 'Drawio',
+      path: `${root}/`,
+      filetypes: [
+        { glob: '*.drawio' },
+        { mime: 'text/xml', glob: '*.drawio.xml' }
+      ]
+    }
+  }))
 
   const drawio = express.Router()
   drawio.get('/', (req, res) => res.sendFile(path.resolve(__dirname, '../index.html')))
