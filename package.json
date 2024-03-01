@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "docker:build": "docker build . -t abitti-drawio",
-    "docker:run": "docker run --rm -it --network ktpjs_ktpjs_network abitti-drawio"
+    "docker:run": "docker run --rm -it --network ktpjs_ktpjs_network --hostname drawio abitti-drawio"
   },
   "devDependencies": {
     "@digabi/typescript-config": "^1.0.0",

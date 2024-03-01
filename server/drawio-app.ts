@@ -8,7 +8,7 @@ interface AppParams {
 }
 
 export default function createDrawioApp(args: AppParams) {
-  const root = '/apps/drawio'
+  const root = '/'
 
   const ad = new dnssd.Advertisement('_http._tcp', args.port, {
     name: 'Drawio',
