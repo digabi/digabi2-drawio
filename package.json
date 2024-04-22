@@ -1,6 +1,6 @@
 {
   "name": "abitti-drawio",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "scripts": {
     "docker:build": "docker build . -t abitti-drawio",
     "docker:run": "docker run --rm -it --network ktpjs_ktpjs_network --hostname drawio abitti-drawio"
