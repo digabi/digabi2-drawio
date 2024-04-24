@@ -3,17 +3,23 @@ Dockerized drawio
 
 ## Development
 
-Run the following commands to initialize the development environment and to build and run the app container.
+Run the following commands to initialize the development environment.
 
 ```
 git submodule init
 git submodule update
-npm run docker:build
-npm run docker:run
 ```
+
+The development flow is roughly as follows
+
+1. Make your changes
+2. To test your changes, rebuild and tag the docker image by running `docker build -t "863419159770.dkr.ecr.eu-north-1.amazonaws.com/drawio:v$(npm pkg get version | tr -d \")" .`
+3. Restart the digabi2 docker compose to make sure that the new image is used.
+
+## Development release
+
+To release a new development version of draw.io, run `./dev-release.sh <major|minor|patch|<semver>>`. This will create a new git tag, and build and push a Docker image with that tag into our private ECR. Building and pushing to ECR happens in Github Actions. Once built and pushed, you can update the draw.io version `apps-dev.json` in the `digabi2` repository to point to the new tag.
 
 ## Release
 
-To release a development version, run `./release.sh <major|minor|patch|<semver>>`. This builds and pushes a new image to the private ECR.
-
-To promote a development version to production (i.e. publish a private image to the public ECR), run `./release.sh` which lets you select the image tag you wish to promote. This also generates a Github release.
+To promote a development version of the image to production (i.e. release it to our public ECR) run `./release.sh`. Choose the tag you want to promote to production, which will trigger a Github Actions workflow. The workflow will push the corresponding private image to our public ECR. After this has completed, update the draw.io version in `apps-prod.json` in the `digabi2` repository to point to the newly released image tag.
