@@ -1,9 +1,9 @@
 {
-  "name": "abitti-drawio",
+  "name": "digabi2-drawio",
   "version": "1.0.3",
   "scripts": {
-    "docker:build": "docker build . -t abitti-drawio",
-    "docker:run": "docker run --rm -it --network ktpjs_ktpjs_network --hostname drawio abitti-drawio"
+    "docker:build": "docker build . -t digabi2-drawio",
+    "docker:run": "docker run --rm -it --network ktpjs_ktpjs_network --hostname drawio digabi2-drawio"
   },
   "devDependencies": {
     "@digabi/typescript-config": "^1.0.0",
