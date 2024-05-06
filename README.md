@@ -1,4 +1,4 @@
-# drawio
+# digabi2-drawio
 Dockerized drawio
 
 ## Development
