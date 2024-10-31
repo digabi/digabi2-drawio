@@ -1,24 +1,8 @@
-FROM node:18.17.0 AS deps
+FROM nginx:1.27.2-alpine
 
 WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm clean-install
+COPY ./index.html /app
+COPY ./drawio/src/main/webapp /app/public
+COPY nginx.conf /etc/nginx/templates/default.conf.template
 
-FROM node:18.17.0 AS build
-
-WORKDIR /app
-COPY --from=deps /app/node_modules node_modules
-COPY server server
-COPY tsconfig.json .
-RUN npx tsc --project server
-
-FROM node:18.17.0
-
-WORKDIR /app
-COPY --from=deps /app/node_modules node_modules
-COPY --from=build /app/dist dist
-COPY bin bin
-COPY index.html .
-RUN mkdir -p drawio/src/main
-COPY drawio/src/main/webapp drawio/src/main/webapp
-ENTRYPOINT ["/app/bin/drawio"]
+EXPOSE 9999
