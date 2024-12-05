@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   release:
-    uses: digabi/workflows-common/.github/workflows/digabi2-companion-app-prod-release.yml@0017bfa09dde7d2ab15bf987d7579a842e3704fb
+    uses: digabi/workflows-common/.github/workflows/digabi2-companion-app-prod-release.yml@4988b3dc2d71079e87bf06682d2b600fbf196ce6
     with:
       app-name: drawio
       aws-access-role: DrawioGithubActionsAccessRole
