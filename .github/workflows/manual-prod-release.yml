@@ -10,10 +10,10 @@ on:
 
 concurrency:
   group: ${{ inputs.tag }}
-  
+
 jobs:
   release:
-    uses: digabi/workflows-common/.github/workflows/digabi2-companion-app-prod-release.yml@4ec7a0650fabcced0f93f871e52d08dfd1702a9d
+    uses: digabi/workflows-common/.github/workflows/digabi2-companion-app-prod-release.yml@e5bff07d5518390a6d7469e1de6bc9b26cf01fe3
     with:
       app-name: drawio
       aws-access-role: DrawioGithubActionsAccessRole
