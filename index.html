@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="UTF-8" />
-    <base href="/">
+    <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Drawio</title>
     <style>
@@ -47,11 +47,22 @@
         return await fetch(path()).then(resp => resp.text())
       }
 
+      async function saveFile(xml, extra) {
+        await fetch(path(), { method: 'PUT', body: xml, ...extra })
+      }
+
       function onLoad() {
-        const drawioElem = document.getElementById('app')
         const args = new URLSearchParams(window.location.search)
         config.set('filename', args.get('filename'))
       }
+
+      // drawio will emit 'autosave' events with new xml data whenever the document changes.
+      // two attempts will be made to save it:
+      // - after <autosaveDelay> ms with no further changes
+      // - when the window is closed (and fetch keepalive conditions are met)
+      let autosaveXml
+      let autosaveTimer
+      const autosaveDelay = 7_500
 
       async function onMessage(event) {
         if (event.data.length === 0) {
@@ -63,11 +74,24 @@
 
         switch (message.event) {
           case 'init': {
-            drawio.postMessage(JSON.stringify({ action: 'load', xml: await getFile() }), '*')
+            drawio.postMessage(
+              JSON.stringify({
+                action: 'load',
+                xml: await getFile(),
+                autosave: 1
+              }),
+              '*'
+            )
             break
           }
           case 'save': {
-            await fetch(path(), { method: 'PUT', body: message.xml })
+            await saveFile(message.xml)
+            break
+          }
+          case 'autosave': {
+            autosaveXml = message.xml
+            clearTimeout(autosaveTimer)
+            autosaveTimer = setTimeout(() => saveFile(autosaveXml), autosaveDelay)
             break
           }
         }
@@ -75,6 +99,11 @@
 
       window.addEventListener('load', onLoad)
       window.addEventListener('message', onMessage)
+      window.addEventListener('visibilitychange', ev => {
+        if (document.visibilityState === 'hidden' && autosaveXml) {
+          saveFile(autosaveXml, { keepalive: true })
+        }
+      })
     </script>
   </body>
 </html>
